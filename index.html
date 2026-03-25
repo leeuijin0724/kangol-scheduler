@@ -284,22 +284,12 @@ const COLORS=[
 const HS=9.5,HE=22,SLOTS=(HE-HS)*2;
 const MIN_Y=2026,MIN_M=2;
 const DOWS=['일','월','화','수','목','금','토'];
-
-const GIST_ID='02c60fae0baad6fe9946833e867c4d40';
-const GIST_TOKEN='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';
-const GIST_FILE='kangol_data.json';
-
-// ── Gist API ──
-async function gistLoad(){
-  try{
-    const r=await fetch(`https://api.github.com/gists/${GIST_ID}`,{headers:{'Authorization':`token ${GIST_TOKEN}`,'Accept':'application/vnd.github.v3+json'}});
-    const d=await r.json();
-    const content=d.files[GIST_FILE]?.content;
-    if(content) return JSON.parse(content);
-  }catch(e){console.error('Gist load error',e);}
-  return null;
-}
-async function gistSave(data){
+const BIN_ID='69c38b87b7ec241ddc9ee574';
+const BIN_KEY='$2a$10$QTiVmXUNJCHzXr2DaW.NgOkd/r9hdscS6lSxZIYO7k1Er.IsDnJZK';
+const BIN_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
+async function gistLoad(){try{const r=await fetch(BIN_URL,{headers:{'X-Master-Key':BIN_KEY}});const d=await r.json();if(d.record)return d.record;}catch(e){console.error('Load error',e);}return null;}
+async function gistSave(data){try{await fetch(BIN_URL,{method:'PUT',headers:{'X-Master-Key':BIN_KEY,'Content-Type':'application/json'},body:JSON.stringify(data)});}catch(e){console.error('Save error',e);}}
+{
   try{
     await fetch(`https://api.github.com/gists/${GIST_ID}`,{
       method:'PATCH',
